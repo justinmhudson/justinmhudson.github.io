@@ -1,0 +1,37 @@
+[
+    {
+    "Player First Name": "Lamar",
+    "Player Last Name": "Jackson",
+    "Position": "QB"
+    },
+    {
+    "Player First Name": "Patrick",
+    "Player Last Name": "Mahomes",
+    "Position": "QB"
+    },
+    {
+    "Player First Name": "Saquon",
+    "Player Last Name": "Barkeley",
+    "Position": "RB"
+    },
+    {
+    "Player First Name": "Cooper",
+    "Player Last Name": "Kupp",
+    "Position": "WR"
+    },
+    {
+    "Player First Name": "Justin",
+    "Player Last Name": "Herbert",
+    "Position": "QB"
+    },
+    {
+    "Player First Name": "Travis",
+    "Player Last Name": "Kelce",
+    "Position": "TE"
+    },
+    {
+    "Player First Name": "TJ",
+    "Player Last Name": "Watt",
+    "Position": "DE"
+    }
+]
