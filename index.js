@@ -6,23 +6,23 @@ window.addEventListener('load', convert);
 function convert() {
    fetch('https://opensheet.elk.sh/1Z5EQYdTPNFcXeprpHtMC5HAr0T-HitPwWWYS3hHzpiY/Sheet1')
       .then(response => response.json())
-      .then((data) => {
+      .then(data => {
          // Get the container element where the table will be inserted
-         let container = document.getElementById("player-table");
+         var container = document.getElementById("player-table");
     
          // Create the table element
-         let table = document.createElement("table");
+         var table = document.createElement("table");
          
          // Get the keys (column names) of the first object in the JSON data
-         let cols = Object.keys(data[0]);
+         var cols = Object.keys(data[0]);
          
          // Create the header element
-         let thead = document.createElement("thead");
-         let tr = document.createElement("tr");
+         var thead = document.createElement("thead");
+         var tr = document.createElement("tr");
          
          // Loop through the column names and create header cells
          cols.forEach((item) => {
-            let th = document.createElement("th");
+            var th = document.createElement("th");
             th.innerText = item; // Set the column name as the text of the header cell
             tr.appendChild(th); // Append the header cell to the header row
          });
@@ -31,14 +31,14 @@ function convert() {
          
          // Loop through the JSON data and create table rows
          data.forEach((item) => {
-            let tr = document.createElement("tr");
+            var tr = document.createElement("tr");
             
             // Get the values of the current object in the JSON data
-            let vals = Object.values(item);
+            var vals = Object.values(item);
             
             // Loop through the values and create table cells
             vals.forEach((elem) => {
-               let td = document.createElement("td");
+               var td = document.createElement("td");
                td.innerText = elem; // Set the value as the text of the table cell
                tr.appendChild(td); // Append the table cell to the table row
             });
