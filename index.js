@@ -2,8 +2,12 @@ window.addEventListener('load', convert);
 
 function convert() {
 
-    const response = await fetch('./testdata.json');
-    const jsonData = await response.json();
+   let jsonData;
+   fetch('https://reqbin.com/echo/get/json')
+      .then(response => response.json())
+      .then((data) => {
+         jsonData = data;
+      });
     
     // Get the container element where the table will be inserted
     let container = document.getElementById("player-table");
