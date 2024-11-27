@@ -3,7 +3,7 @@ window.addEventListener('load', convert);
 function convert() {
 
    let jsonData;
-   fetch('https://reqbin.com/echo/get/json')
+   fetch('./testdata.json')
       .then(response => response.json())
       .then((data) => {
          jsonData = data;
