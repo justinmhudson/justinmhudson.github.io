@@ -1,5 +1,8 @@
 window.addEventListener('load', convert);
 
+// API to convert Google Sheet to JSON taken from here: https://github.com/benborgers/opensheet#readme
+// JS to convert JSON to HTML table taken from here: https://www.tutorialspoint.com/how-to-convert-json-data-to-a-html-table-using-javascript-jquery
+
 function convert() {
    fetch('https://opensheet.elk.sh/1Z5EQYdTPNFcXeprpHtMC5HAr0T-HitPwWWYS3hHzpiY/Sheet1')
       .then(response => response.json())
