@@ -1,31 +1,9 @@
-function fetchJSONData() {
-    fetch('./testdata.json')
-    .then((response) => response.json())
-    .then((json) => console.log(json));
-}
-
 window.addEventListener('load', convert);
 
 function convert() {
-         
-    // Sample JSON data
-    let jsonData = [
-       {
-          name: "Saurabh",
-          age: "20",
-          city: "Prayagraj"
-       },
-       {
-          name: "Vipin",
-          age: 23,
-          city: "Lucknow",
-       },
-       {
-          name: "Saksham",
-          age: 21,
-          city: "Noida"
-       }
-    ];
+
+    const response = await fetch('./testdata.json');
+    const jsonData = await response.json();
     
     // Get the container element where the table will be inserted
     let container = document.getElementById("player-table");
