@@ -1,32 +1,32 @@
 [
     {
-        "playerFirstName": "Lamar",
-        "playerLastName": "Jackson",
-        "team": "Ravens",
-        "position": "QB"
+        "Player First Name": "Lamar",
+        "Player Last Name": "Jackson",
+        "Team": "Ravens",
+        "Position": "QB"
     },
     {
-        "playerFirstName": "Saquon",
-        "playerLastName": "Barkeley",
-        "team": "Eagles",
-        "position": "HB"
+        "Player First Name": "Saquon",
+        "Player Last Name": "Barkeley",
+        "Team": "Eagles",
+        "Position": "HB"
     },
     {
-        "playerFirstName": "Cooper",
-        "playerLastName": "Kupp",
-        "team": "Rams",
-        "position": "WR"
+        "Player First Name": "Cooper",
+        "Player Last Name": "Kupp",
+        "Team": "Rams",
+        "Position": "WR"
     },
     {
-        "playerFirstName": "Travis",
-        "playerLastName": "Kelce",
-        "team": "Chiefs",
-        "position": "TE"
+        "Player First Name": "Travis",
+        "Player Last Name": "Kelce",
+        "Team": "Chiefs",
+        "Position": "TE"
     },
     {
-        "playerFirstName": "TJ",
-        "playerLastName": "Watt",
-        "team": "Steelers",
-        "position": "OLB"
+        "Player First Name": "TJ",
+        "Player Last Name": "Watt",
+        "Team": "Steelers",
+        "Position": "OLB"
     }
 ]
