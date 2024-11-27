@@ -1,7 +1,7 @@
 window.addEventListener('load', convert);
 
 function convert() {
-   fetch('./testdata.json')
+   fetch('https://opensheet.elk.sh/1Z5EQYdTPNFcXeprpHtMC5HAr0T-HitPwWWYS3hHzpiY/Sheet1')
       .then(response => response.json())
       .then((data) => {
          // Get the container element where the table will be inserted
