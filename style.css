@@ -15,6 +15,9 @@ body {
   background: #105469;
   font-family: 'Open Sans', sans-serif;
 }
+div {
+  x-overflow: auto;
+}
 table {
   background: #012B39;
   border-radius: 0.25em;
