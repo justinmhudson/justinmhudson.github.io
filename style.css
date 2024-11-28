@@ -37,9 +37,9 @@ td {
 .disabled td {
   color: #4F5F64;
 }
-tbody tr {
+tr {
   transition: background 0.25s ease;
 }
-tbody tr:hover {
+tr:hover {
   background: #014055;
 }
