@@ -16,9 +16,10 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 div {
-  overflow-y: 0;
+  overflow-y: hidden;
   overflow-x: auto;
   width: 95%;
+  height: auto;
 }
 table {
   background: #012B39;
