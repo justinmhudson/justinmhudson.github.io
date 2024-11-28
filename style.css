@@ -20,6 +20,7 @@ table {
   border-radius: 0.25em;
   border-collapse: collapse;
   margin: 1em;
+  width: 100%;
 }
 th {
   border-bottom: 1px solid #364043;
