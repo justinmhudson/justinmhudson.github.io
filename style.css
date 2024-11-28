@@ -16,14 +16,15 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 div {
+  overflow-y: 0;
   overflow-x: auto;
+  width: 95%;
 }
 table {
   background: #012B39;
   border-radius: 0.25em;
   border-collapse: collapse;
   margin: 1em;
-  width: 100%;
 }
 th {
   border-bottom: 1px solid #364043;
