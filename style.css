@@ -1,23 +1,40 @@
-body { 
-  font-size: 140%; 
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600);
+
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-h2 {
-  text-align: center;
-  padding: 20px 0;
+body {
+  background: #105469;
+  font-family: 'Open Sans', sans-serif;
 }
-
-table caption {
-  padding: .5em 0;
+table {
+  background: #012B39;
+  border-radius: 0.25em;
+  border-collapse: collapse;
+  margin: 1em;
 }
-
-table.dataTable th,
-table.dataTable td {
-  white-space: nowrap;
+th {
+  border-bottom: 1px solid #364043;
+  color: #E2B842;
+  font-size: 0.85em;
+  font-weight: 600;
+  padding: 0.5em 1em;
+  text-align: left;
 }
-
-.p {
-  text-align: center;
-  padding-top: 140px;
-  font-size: 14px;
+td {
+  color: #fff;
+  font-weight: 400;
+  padding: 0.65em 1em;
+}
+.disabled td {
+  color: #4F5F64;
+}
+tbody tr {
+  transition: background 0.25s ease;
+}
+tbody tr:hover {
+  background: #014055;
 }
