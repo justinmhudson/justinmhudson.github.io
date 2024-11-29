@@ -12,6 +12,7 @@ function convert() {
     
          // Create the table element
          var table = document.createElement("table");
+         table.setAttribute("class", "sortable");
          
          // Get the keys (column names) of the first object in the JSON data
          var cols = Object.keys(data[0]);
@@ -21,10 +22,14 @@ function convert() {
          var tr = document.createElement("tr");
          
          // Loop through the column names and create header cells
-         cols.forEach((item, i) => {
+         cols.forEach((item) => {
             var th = document.createElement("th");
-            th.setAttribute("onclick", "sortTable" + "(" + i + ")");
-            th.innerText = item; // Set the column name as the text of the header cell
+            var button = document.createElement("button");
+            button.innerText = item; // Set the column name as the text of the header cell
+            var span = document.createElement("span");
+            span.setAttribute("aria-hidden", "true");
+            button.appendChild(span);
+            th.appendChild(button);
             tr.appendChild(th); // Append the header cell to the header row
          });
          thead.appendChild(tr); // Append the header row to the header
@@ -50,60 +55,170 @@ function convert() {
 }
 
 
-//sort function taken from: https://www.w3schools.com/howto/howto_js_sort_table.asp
+/*
+ *   This content is licensed according to the W3C Software License at
+ *   https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+ *
+ *   File:   sortable-table.js
+ *
+ *   Desc:   Adds sorting to a HTML data table that implements ARIA Authoring Practices
+ */
 
-function sortTable(n) {
-   var table, rows, switching, i, x, y, shouldSwitch, dir, switchCount = 0;
-   table = document.getElementById("player-table");
-   switching = true;
-   // Set the sorting direction to ascending:
-   dir = "asc";
-   /* Make a loop that will continue until
-   no switching has been done: */
-   while (switching) {
-     // Start by saying: no switching is done:
-     switching = false;
-     rows = table.rows;
-     /* Loop through all table rows (except the
-     first, which contains table headers): */
-     for (i = 1; i < (rows.length - 1); i++) {
-       // Start by saying there should be no switching:
-       shouldSwitch = false;
-       /* Get the two elements you want to compare,
-       one from current row and one from the next: */
-       x = rows[i].getElementsByTagName("TD")[n];
-       y = rows[i + 1].getElementsByTagName("TD")[n];
-       /* Check if the two rows should switch place,
-       based on the direction, asc or desc: */
-       if (dir == "asc") {
-         if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-           // If so, mark as a switch and break the loop:
-           shouldSwitch = true;
-           break;
-         }
-       } else if (dir == "desc") {
-         if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-           // If so, mark as a switch and break the loop:
-           shouldSwitch = true;
-           break;
-         }
-       }
-     }
-     if (shouldSwitch) {
-       /* If a switch has been marked, make the switch
-       and mark that a switch has been done: */
-       rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-       switching = true;
-       // Each time a switch is done, increase this count by 1:
-       switchCount ++;
-     } else {
-       /* If no switching has been done AND the direction is "asc",
-       set the direction to "desc" and run the while loop again. */
-       if (switchCount == 0 && dir == "asc") {
-         dir = "desc";
-         switching = true;
-       }
-     }
-   }
- }
+'use strict';
 
+class SortableTable {
+  constructor(tableNode) {
+    this.tableNode = tableNode;
+
+    this.columnHeaders = tableNode.querySelectorAll('thead th');
+
+    this.sortColumns = [];
+
+    for (var i = 0; i < this.columnHeaders.length; i++) {
+      var ch = this.columnHeaders[i];
+      var buttonNode = ch.querySelector('button');
+      if (buttonNode) {
+        this.sortColumns.push(i);
+        buttonNode.setAttribute('data-column-index', i);
+        buttonNode.addEventListener('click', this.handleClick.bind(this));
+      }
+    }
+
+    this.optionCheckbox = document.querySelector(
+      'input[type="checkbox"][value="show-unsorted-icon"]'
+    );
+
+    if (this.optionCheckbox) {
+      this.optionCheckbox.addEventListener(
+        'change',
+        this.handleOptionChange.bind(this)
+      );
+      if (this.optionCheckbox.checked) {
+        this.tableNode.classList.add('show-unsorted-icon');
+      }
+    }
+  }
+
+  setColumnHeaderSort(columnIndex) {
+    if (typeof columnIndex === 'string') {
+      columnIndex = parseInt(columnIndex);
+    }
+
+    for (var i = 0; i < this.columnHeaders.length; i++) {
+      var ch = this.columnHeaders[i];
+      var buttonNode = ch.querySelector('button');
+      if (i === columnIndex) {
+        var value = ch.getAttribute('aria-sort');
+        if (value === 'descending') {
+          ch.setAttribute('aria-sort', 'ascending');
+          this.sortColumn(
+            columnIndex,
+            'ascending',
+            ch.classList.contains('num')
+          );
+        } else {
+          ch.setAttribute('aria-sort', 'descending');
+          this.sortColumn(
+            columnIndex,
+            'descending',
+            ch.classList.contains('num')
+          );
+        }
+      } else {
+        if (ch.hasAttribute('aria-sort') && buttonNode) {
+          ch.removeAttribute('aria-sort');
+        }
+      }
+    }
+  }
+
+  sortColumn(columnIndex, sortValue, isNumber) {
+    function compareValues(a, b) {
+      if (sortValue === 'ascending') {
+        if (a.value === b.value) {
+          return 0;
+        } else {
+          if (isNumber) {
+            return a.value - b.value;
+          } else {
+            return a.value < b.value ? -1 : 1;
+          }
+        }
+      } else {
+        if (a.value === b.value) {
+          return 0;
+        } else {
+          if (isNumber) {
+            return b.value - a.value;
+          } else {
+            return a.value > b.value ? -1 : 1;
+          }
+        }
+      }
+    }
+
+    if (typeof isNumber !== 'boolean') {
+      isNumber = false;
+    }
+
+    var tbodyNode = this.tableNode.querySelector('tbody');
+    var rowNodes = [];
+    var dataCells = [];
+
+    var rowNode = tbodyNode.firstElementChild;
+
+    var index = 0;
+    while (rowNode) {
+      rowNodes.push(rowNode);
+      var rowCells = rowNode.querySelectorAll('th, td');
+      var dataCell = rowCells[columnIndex];
+
+      var data = {};
+      data.index = index;
+      data.value = dataCell.textContent.toLowerCase().trim();
+      if (isNumber) {
+        data.value = parseFloat(data.value);
+      }
+      dataCells.push(data);
+      rowNode = rowNode.nextElementSibling;
+      index += 1;
+    }
+
+    dataCells.sort(compareValues);
+
+    // remove rows
+    while (tbodyNode.firstChild) {
+      tbodyNode.removeChild(tbodyNode.lastChild);
+    }
+
+    // add sorted rows
+    for (var i = 0; i < dataCells.length; i += 1) {
+      tbodyNode.appendChild(rowNodes[dataCells[i].index]);
+    }
+  }
+
+  /* EVENT HANDLERS */
+
+  handleClick(event) {
+    var tgt = event.currentTarget;
+    this.setColumnHeaderSort(tgt.getAttribute('data-column-index'));
+  }
+
+  handleOptionChange(event) {
+    var tgt = event.currentTarget;
+
+    if (tgt.checked) {
+      this.tableNode.classList.add('show-unsorted-icon');
+    } else {
+      this.tableNode.classList.remove('show-unsorted-icon');
+    }
+  }
+}
+
+// Initialize sortable table buttons
+window.addEventListener('load', function () {
+  var sortableTables = document.querySelectorAll('table.sortable');
+  for (var i = 0; i < sortableTables.length; i++) {
+    new SortableTable(sortableTables[i]);
+  }
+});
