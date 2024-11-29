@@ -34,7 +34,7 @@ function convert() {
             tr.appendChild(th); // Append the header cell to the header row
          });
          thead.appendChild(tr); // Append the header row to the header
-         table.append(tr) // Append the header to the table
+         table.append(thead); // Append the header to the table
          
          // Loop through the JSON data and create table rows
          data.forEach((item) => {
