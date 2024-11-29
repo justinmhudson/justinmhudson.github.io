@@ -23,7 +23,7 @@ function convert() {
          // Loop through the column names and create header cells
          cols.forEach((item, i) => {
             var th = document.createElement("th");
-            th.setAttribute("onclick", "sortTable" + i);
+            th.setAttribute("onclick", "sortTable" + "(" + i + ")");
             th.innerText = item; // Set the column name as the text of the header cell
             tr.appendChild(th); // Append the header cell to the header row
          });
