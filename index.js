@@ -24,6 +24,7 @@ function convert() {
          // Loop through the column names and create header cells
          cols.forEach((item) => {
             var th = document.createElement("th");
+            th.setAttribute("aria-sort", "ascending");
             var button = document.createElement("button");
             button.innerText = item; // Set the column name as the text of the header cell
             var span = document.createElement("span");
