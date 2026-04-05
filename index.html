@@ -1,14 +1,714 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style.css">
-    <script src="./index.js"></script>
-    <title>Home Page</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASL Fingerspelling Practice — asl.ms</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #003399;
+      --blue-light: #e8f0ff;
+      --blue-mid: #004488;
+      --blue-hover: #004cbb;
+      --gold: #f0c040;
+      --cream: #fffbea;
+      --skin: #F5C99A;
+      --skin-dark: #D4956A;
+      --text: #222;
+      --text-muted: #666;
+      --border: #ccc;
+      --bg: #fff;
+      --bg-secondary: #f5f5f2;
+      --radius: 4px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #e8e8e8;
+        --text-muted: #aaa;
+        --border: #444;
+        --bg: #1a1a1a;
+        --bg-secondary: #242424;
+        --blue-light: #0a1a40;
+        --cream: #1e1c10;
+        --gold: #b08a20;
+      }
+    }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--text);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+    }
+
+    a { color: var(--blue); }
+
+    /* ── Header ── */
+    .site-header {
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--blue);
+      padding: 10px 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .site-logo {
+      font-size: 30px;
+      font-weight: 900;
+      font-family: 'Arial Black', 'Arial Bold', sans-serif;
+      color: var(--blue);
+      letter-spacing: -1px;
+      text-decoration: none;
+    }
+    .site-tagline {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+    .site-tagline a { font-size: 12px; }
+
+    /* ── Nav ── */
+    .nav-bar {
+      background: var(--blue);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      padding: 4px;
+    }
+    .nav-bar a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+      padding: 5px 11px;
+      background: var(--blue-mid);
+      border-radius: 2px;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .nav-bar a:hover { background: var(--blue-hover); color: #fff; }
+
+    /* ── Layout ── */
+    .page-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 210px;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (max-width: 660px) {
+      .main-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Content ── */
+    .content-area h1 {
+      font-size: 21px;
+      color: var(--blue);
+      margin-bottom: 0.8rem;
+      font-family: Arial, sans-serif;
+      border-bottom: 1px solid var(--blue);
+      padding-bottom: 4px;
+    }
+    .content-area p {
+      font-size: 13px;
+      line-height: 1.75;
+      margin-bottom: 0.9rem;
+      color: var(--text);
+    }
+
+    /* ── Practice box ── */
+    .practice-box {
+      background: var(--cream);
+      border: 2px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      margin: 1rem 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Word strip */
+    .word-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 12px;
+      min-height: 38px;
+      align-items: center;
+    }
+    .strip-letter {
+      font-size: 18px;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      color: var(--border);
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+      background: var(--bg);
+      cursor: pointer;
+      user-select: none;
+    }
+    .strip-letter:hover { border-color: var(--blue); color: var(--blue); }
+    .strip-letter.done { color: var(--blue); border-color: var(--blue); background: var(--blue-light); }
+    .strip-letter.active {
+      color: #fff;
+      border-color: var(--blue);
+      background: var(--blue);
+      transform: scale(1.18);
+      box-shadow: 0 2px 8px rgba(0,51,153,0.25);
+    }
+
+    /* Progress bar */
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      margin: 0 0 14px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 3px;
+      transition: width 0.15s linear;
+    }
+
+    /* Hand stage */
+    .hand-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 230px;
+      margin: 6px 0 12px;
+    }
+    .hand-stage svg {
+      width: 148px;
+      height: 185px;
+      filter: drop-shadow(0 3px 8px rgba(0,0,80,0.12));
+    }
+    .current-letter {
+      font-size: 54px;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      color: var(--blue);
+      margin-top: 8px;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+    .letter-counter {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Speed control */
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: Arial, sans-serif;
+      margin-bottom: 12px;
+    }
+    .speed-row input[type="range"] {
+      width: 140px;
+      cursor: pointer;
+      accent-color: var(--blue);
+    }
+    .speed-label {
+      min-width: 70px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* Playback controls */
+    .controls {
+      display: flex;
+      gap: 7px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .btn {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      padding: 7px 16px;
+      border-radius: 3px;
+      cursor: pointer;
+      border: 1px solid var(--blue);
+      background: var(--blue);
+      color: #fff;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--blue-hover); }
+    .btn:disabled { opacity: 0.38; cursor: default; pointer-events: none; }
+    .btn.secondary {
+      background: var(--bg);
+      color: var(--blue);
+    }
+    .btn.secondary:hover { background: var(--blue-light); }
+    .btn.icon { font-size: 16px; padding: 7px 14px; }
+
+    /* Custom word input */
+    .custom-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+    .custom-row input {
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      padding: 6px 10px;
+      border: 1px solid var(--blue);
+      border-radius: 3px;
+      width: 190px;
+      text-transform: uppercase;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+    }
+    .custom-row input:focus { box-shadow: 0 0 0 2px rgba(0,51,153,0.25); }
+
+    /* ── Sidebar ── */
+    .sidebar { font-family: Arial, sans-serif; font-size: 13px; }
+    .sidebar-box {
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .sidebar-box-title {
+      background: var(--blue);
+      color: #fff;
+      padding: 7px 10px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    .sidebar-box-body {
+      padding: 8px 10px;
+      background: var(--bg);
+    }
+    .sidebar-box-body a {
+      display: block;
+      color: var(--blue);
+      text-decoration: none;
+      padding: 4px 0;
+      border-bottom: 1px dotted var(--border);
+      font-size: 12px;
+    }
+    .sidebar-box-body a:last-child { border-bottom: none; }
+    .sidebar-box-body a:hover { text-decoration: underline; }
+
+    /* Alpha reference grid */
+    .alpha-ref {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+    }
+    .alpha-ref-cell {
+      text-align: center;
+      cursor: pointer;
+      padding: 3px 2px 2px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .alpha-ref-cell:hover {
+      background: var(--blue-light);
+      border-color: var(--blue);
+    }
+    .alpha-ref-cell svg { width: 36px; height: 44px; display: block; margin: 0 auto; }
+    .alpha-ref-cell .lbl {
+      font-weight: bold;
+      color: var(--blue);
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      margin-top: 2.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    /* ── Animations ── */
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.78) translateY(12px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0);    }
+    }
+    .popin { animation: popIn 0.23s cubic-bezier(.34,1.56,.64,1) forwards; }
+  </style>
 </head>
 <body>
-    <h1>Fantasy Football Data</h1>
-    <div id="player-table"></div>
+
+  <header class="site-header">
+    <a class="site-logo" href="#">ASL.ms</a>
+    <div class="site-tagline">
+      Dr. Bill Vicars' American Sign Language Fingerspelling Practice Site<br>
+      <a href="https://www.lifeprint.com">Part of Lifeprint.com / ASLU</a>
+    </div>
+  </header>
+
+  <nav class="nav-bar">
+    <a href="#">Home</a>
+    <a href="#">ASL Lessons</a>
+    <a href="#">Fingerspelling</a>
+    <a href="#">ASL Dictionary</a>
+    <a href="#">Baby Signing</a>
+    <a href="#">Deaf Culture</a>
+    <a href="#">About Dr. Vicars</a>
+    <a href="https://www.lifeprint.com">Lifeprint.com</a>
+  </nav>
+
+  <div class="page-inner">
+    <div class="main-layout">
+
+      <!-- ── Main content ── -->
+      <main class="content-area">
+        <h1>ASL Fingerspelling Practice</h1>
+        <p>A random word is displayed one letter at a time using ASL handshapes. Use the speed slider to control the pace, step through manually with the arrow buttons, or type your own word to practice spelling it.</p>
+
+        <div class="practice-box">
+
+          <!-- Word progress strip -->
+          <div class="word-strip" id="wordStrip"></div>
+
+          <!-- Progress bar -->
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+          </div>
+
+          <!-- Hand display -->
+          <div class="hand-stage">
+            <div id="handSvg"></div>
+            <div class="current-letter" id="currentLetter">—</div>
+            <div class="letter-counter" id="letterCounter">&nbsp;</div>
+          </div>
+
+          <!-- Speed slider -->
+          <div class="speed-row">
+            <span>Speed:</span>
+            <input type="range" id="speedSlider" min="1" max="10" value="4" step="1">
+            <span class="speed-label" id="speedLabel">Medium</span>
+          </div>
+
+          <!-- Playback controls -->
+          <div class="controls">
+            <button class="btn icon secondary" id="prevBtn" onclick="stepBy(-1)" title="Previous letter">&#9664;</button>
+            <button class="btn icon" id="playBtn" onclick="togglePlay()">&#9654; Play</button>
+            <button class="btn icon secondary" id="nextBtn" onclick="stepBy(1)" title="Next letter">&#9654;</button>
+            <button class="btn secondary" onclick="restart()">&#8635; Restart</button>
+            <button class="btn secondary" onclick="newWord()">New Word</button>
+          </div>
+
+          <!-- Custom word -->
+          <div class="custom-row">
+            <input type="text" id="customWord" maxlength="16" placeholder="TYPE A WORD..."
+              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'')">
+            <button class="btn" onclick="spellCustom()">Go</button>
+          </div>
+
+        </div><!-- /.practice-box -->
+
+        <p>Each handshape represents one letter of the English alphabet. Letters <strong>J</strong> and <strong>Z</strong> involve motion — the image shows the starting hand position. Use <strong>&#9664; &#9654;</strong> to step through letters manually, or press <strong>Play</strong> to run automatically at your chosen speed.</p>
+
+        <p>Fingerspelling is used in ASL primarily for proper nouns — names of people, places, and brands — and for English words that have no established ASL sign. Visit <a href="https://www.lifeprint.com">Lifeprint.com</a> for full ASL lessons, a sign language dictionary, and teaching resources.</p>
+
+      </main>
+
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar">
+
+        <div class="sidebar-box">
+          <div class="sidebar-box-title">Manual Alphabet</div>
+          <div class="sidebar-box-body">
+            <div class="alpha-ref" id="alphaRef"></div>
+          </div>
+        </div>
+
+        <div class="sidebar-box">
+          <div class="sidebar-box-title">Quick Links</div>
+          <div class="sidebar-box-body">
+            <a href="https://www.lifeprint.com/asl101/topics/wallpaper1.htm">ASL Alphabet Chart</a>
+            <a href="http://asl.bz">ASL Numbers</a>
+            <a href="https://www.lifeprint.com">Free ASL Lessons</a>
+            <a href="https://www.lifeprint.com/asl101/pages-layout/conceptindex.htm">ASL Dictionary</a>
+            <a href="https://www.lifeprint.com/asl101/pages-layout/babysigning.htm">Baby Sign Language</a>
+            <a href="https://www.lifeprint.com/asl101/pages-layout/deafculture.htm">Deaf Culture Articles</a>
+            <a href="https://www.lifeprint.com/asl101/pages-layout/interpreting.htm">Interpreter Resources</a>
+          </div>
+        </div>
+
+        <div class="sidebar-box">
+          <div class="sidebar-box-title">About Dr. Vicars</div>
+          <div class="sidebar-box-body" style="font-size:12px;line-height:1.6;color:var(--text);">
+            Deaf (Hard of Hearing) Associate Professor of Deaf Studies at a large state university in California. Creator of <a href="https://www.lifeprint.com">Lifeprint.com</a> / ASLU.
+          </div>
+        </div>
+
+      </aside>
+    </div><!-- /.main-layout -->
+
+    <footer class="site-footer">
+      &copy; Dr. William Vicars &mdash;
+      <a href="https://www.lifeprint.com">Lifeprint.com</a> / ASLU &mdash;
+      American Sign Language University
+    </footer>
+  </div><!-- /.page-inner -->
+
+  <script>
+    // ─────────────────────────────────────────────
+    // Word list
+    // ─────────────────────────────────────────────
+    const WORDS = [
+      'CAT','DOG','SIGN','DEAF','HAND','ASL','PALM','FINGER','LEARN','SPELL',
+      'HELLO','NAME','LOVE','FRIEND','SCHOOL','WATER','FOOD','FAMILY','HOME',
+      'WORK','BIRD','FISH','TREE','BOOK','STAR','MOON','SUN','RAIN','SNOW',
+      'WIND','BLUE','GREEN','RED','HAPPY','SMILE','HEART','LIGHT','DREAM',
+      'PEACE','TRUST'
+    ];
+
+    // ─────────────────────────────────────────────
+    // SVG hand-shape definitions (all 26 letters)
+    // Each is a complete SVG string drawn from scratch.
+    // ─────────────────────────────────────────────
+    const SK  = '#F5C99A';   // skin fill
+    const SD  = '#D4956A';   // skin stroke / shadow
+    const BL  = '#4488ff';   // motion-arrow blue
+
+    // Helper: rectangle finger segment, with optional rotation
+    function fi(x, y, w, h, rot, cx, cy) {
+      const rx = 4;
+      const t  = rot ? ` transform="rotate(${rot},${cx !== undefined ? cx : x+w/2},${cy !== undefined ? cy : y+h/2})"` : '';
+      return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${SK}" stroke="${SD}" stroke-width="1"${t}/>`;
+    }
+
+    // Helper: palm base
+    function pal(x=10, y=35, w=38, h=36, r=6) {
+      return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${SK}" stroke="${SD}" stroke-width="1.2"/>`;
+    }
+
+    // Helper: wrap content in full SVG
+    function svg(content, vb='0 0 60 80') {
+      return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg">${content}</svg>`;
+    }
+
+    // Motion arrow defs (for J and Z)
+    const ARROW_DEF = `<defs><marker id="arr" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5Z" fill="${BL}"/></marker></defs>`;
+
+    const LETTERS = {
+      A: svg(`${pal(11,36,36,34,7)}${fi(13,26,8,18)}${fi(22,24,8,18)}${fi(31,25,8,17)}${fi(39,27,7,16)}${fi(6,38,12,8)}`),
+      B: svg(`${pal(12,42,34,28,6)}${fi(14,12,7,34)}${fi(22,10,7,36)}${fi(30,11,7,35)}${fi(38,13,7,32)}${fi(16,42,10,7)}`),
+      C: svg(`<path d="M48,20 Q52,38 48,60 Q43,65 34,65 Q23,65 18,58 Q13,50 15,38 Q17,27 24,22 L48,20Z" fill="${SK}" stroke="${SD}" stroke-width="1.2"/><path d="M22,20 Q30,14 40,16 L48,20" fill="${SK}" stroke="${SD}" stroke-width="8" stroke-linecap="round"/><path d="M18,58 Q26,67 38,66" fill="none" stroke="${SD}" stroke-width="1.2"/>`),
+      D: svg(`${pal(12,40,35,32,6)}${fi(20,10,8,34)}${fi(30,34,8,14)}${fi(38,35,7,13)}${fi(14,34,9,13)}<ellipse cx="24" cy="41" rx="9" ry="5" fill="${SK}" stroke="${SD}" stroke-width="1"/>${fi(6,42,14,8,-20,13,46)}`),
+      E: svg(`${pal(10,40,38,30,6)}${fi(12,26,7,20,10,15,36)}${fi(21,24,7,22,5,24,35)}${fi(30,24,7,21)}${fi(39,26,6,18,-5,42,35)}${fi(13,39,12,7)}`),
+      F: svg(`${pal(12,42,35,28,6)}${fi(14,30,7,18,25,17,39)}${fi(23,12,7,34)}${fi(31,13,7,33)}${fi(39,15,7,30)}<ellipse cx="18" cy="39" rx="7" ry="5" fill="none" stroke="${SD}" stroke-width="1.5"/>${fi(5,36,14,8,-30,12,40)}`),
+      G: svg(`${pal(10,44,38,26,6)}${fi(22,26,8,24,-80,26,44)}${fi(30,36,7,16)}${fi(38,37,7,14)}${fi(14,36,7,14)}${fi(2,37,16,8,-10,10,41)}`),
+      H: svg(`${pal(10,44,38,26,6)}${fi(14,28,7,22,-80,18,44)}${fi(22,28,7,22,-80,26,44)}${fi(32,36,7,14)}${fi(40,37,6,13)}${fi(3,40,14,8,-10,10,44)}`),
+      I: svg(`${pal(11,38,36,32,6)}${fi(13,26,7,18)}${fi(21,24,7,18)}${fi(29,25,7,18)}${fi(38,10,7,34)}${fi(6,40,13,8)}`),
+      J: svg(`${pal(11,38,36,32,6)}${fi(13,26,7,18)}${fi(21,24,7,18)}${fi(29,25,7,18)}${fi(38,10,7,34)}${fi(6,40,13,8)}${ARROW_DEF}<path d="M42,8 Q54,8 54,18" fill="none" stroke="${BL}" stroke-width="2" stroke-dasharray="3,2" marker-end="url(#arr)"/><text x="22" y="78" font-size="8" fill="${BL}" font-family="Arial">+motion</text>`),
+      K: svg(`${pal(12,42,34,28,6)}${fi(20,10,7,36)}${fi(29,18,7,28,15,32,32)}${fi(36,35,7,14)}${fi(14,36,7,14)}${fi(6,30,16,8,-40,14,34)}`),
+      L: svg(`${pal(12,42,34,28,6)}${fi(20,10,7,36)}${fi(28,36,7,14)}${fi(36,37,7,13)}${fi(14,36,7,14)}${fi(2,38,18,8,-5,11,42)}`),
+      M: svg(`${pal(10,36,38,34,6)}${fi(12,20,8,22)}${fi(21,18,8,22)}${fi(30,19,8,21)}${fi(38,28,7,14)}${fi(10,36,14,8)}`),
+      N: svg(`${pal(10,36,38,34,6)}${fi(14,20,8,22)}${fi(23,18,8,22)}${fi(32,26,8,16)}${fi(40,28,7,14)}${fi(11,36,14,8)}`),
+      O: svg(`<ellipse cx="28" cy="42" rx="20" ry="24" fill="${SK}" stroke="${SD}" stroke-width="1.2"/><ellipse cx="28" cy="42" rx="12" ry="16" fill="white" stroke="none"/>${fi(18,16,8,22,-10,22,27)}${fi(27,14,8,22)}${fi(36,16,7,20,10,39,26)}${fi(43,20,6,18,20,46,29)}${fi(5,34,16,8,-30,13,38)}`),
+      P: svg(`${pal(12,30,34,38,6)}${fi(20,10,7,28,20,23,24)}${fi(29,12,7,26,35,32,25)}${fi(36,30,7,14)}${fi(6,26,16,8,-30,14,30)}`),
+      Q: svg(`${pal(10,36,38,30,6)}${fi(22,16,8,26,15,26,29)}${fi(30,34,7,14)}${fi(38,35,7,13)}${fi(13,34,7,14)}${fi(3,34,16,8,15,11,38)}`),
+      R: svg(`${pal(12,42,34,28,6)}${fi(19,12,7,34,-8,22,29)}${fi(26,12,7,34,8,29,29)}${fi(35,35,7,14)}${fi(14,36,7,14)}${fi(5,40,14,8)}`),
+      S: svg(`${pal(11,36,36,34,7)}${fi(13,24,8,18)}${fi(22,22,8,18)}${fi(31,23,8,17)}${fi(39,25,7,16)}${fi(8,30,18,9,-5,17,34)}`),
+      T: svg(`${pal(11,38,36,32,6)}${fi(13,25,7,20)}${fi(22,25,7,20)}${fi(31,26,7,18)}${fi(39,28,7,16)}${fi(7,34,16,9,-10,15,38)}`),
+      U: svg(`${pal(12,42,34,28,6)}${fi(17,10,7,36)}${fi(25,10,7,36)}${fi(33,35,7,14)}${fi(41,36,6,13)}${fi(5,40,14,8)}`),
+      V: svg(`${pal(12,42,34,28,6)}${fi(15,10,7,36,-8,18,28)}${fi(27,10,7,36,8,30,28)}${fi(36,36,7,14)}${fi(14,36,7,14)}${fi(5,40,14,8)}`),
+      W: svg(`${pal(10,42,38,28,6)}${fi(12,10,7,36,-10,15,28)}${fi(22,8,7,38)}${fi(32,10,7,36,10,35,28)}${fi(40,36,7,14)}${fi(5,42,12,8)}`),
+      X: svg(`${pal(12,40,34,30,6)}${fi(20,14,8,30,15,24,29)}${fi(29,34,7,14)}${fi(37,35,7,13)}${fi(13,34,7,14)}${fi(5,38,14,8)}`),
+      Y: svg(`${pal(11,38,36,32,6)}${fi(13,26,7,18)}${fi(21,24,7,18)}${fi(29,25,7,18)}${fi(38,10,7,34)}${fi(2,36,16,8,-15,10,40)}`),
+      Z: svg(`${pal(12,42,34,28,6)}${fi(20,10,7,36)}${fi(28,35,7,14)}${fi(36,36,7,13)}${fi(14,35,7,14)}${fi(5,40,14,8)}<defs><marker id="arrz" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5Z" fill="${BL}"/></marker></defs><path d="M20,10 L38,10 L20,26 L38,26" fill="none" stroke="${BL}" stroke-width="2" stroke-dasharray="3,2" stroke-linejoin="round" marker-end="url(#arrz)"/><text x="16" y="78" font-size="8" fill="${BL}" font-family="Arial">+motion</text>`),
+    };
+
+    // ─────────────────────────────────────────────
+    // State
+    // ─────────────────────────────────────────────
+    let currentWord = '';
+    let currentIdx  = 0;
+    let playing     = false;
+    let timer       = null;
+
+    const speedSlider = document.getElementById('speedSlider');
+    const speedLabel  = document.getElementById('speedLabel');
+    const playBtn     = document.getElementById('playBtn');
+    const prevBtn     = document.getElementById('prevBtn');
+    const nextBtn     = document.getElementById('nextBtn');
+
+    const SPEED_NAMES = [,'Very slow','Very slow','Slow','Slow','Medium','Medium','Fast','Fast','Very fast','Blazing'];
+
+    function getDelay() {
+      // speed 1 → 4000 ms,  speed 10 → 300 ms
+      const v = parseInt(speedSlider.value);
+      return Math.round(4000 - (v - 1) * (3700 / 9));
+    }
+
+    speedSlider.addEventListener('input', () => {
+      speedLabel.textContent = SPEED_NAMES[parseInt(speedSlider.value)];
+      if (playing) { clearTimeout(timer); scheduleNext(); }
+    });
+
+    // ─────────────────────────────────────────────
+    // Rendering
+    // ─────────────────────────────────────────────
+    function buildStrip(word) {
+      const strip = document.getElementById('wordStrip');
+      strip.innerHTML = '';
+      word.split('').forEach((ch, i) => {
+        const span = document.createElement('span');
+        span.className = 'strip-letter';
+        span.textContent = ch;
+        span.id = 'sl-' + i;
+        span.title = 'Jump to ' + ch;
+        span.addEventListener('click', () => { setPlaying(false); currentIdx = i; showLetter(i); });
+        strip.appendChild(span);
+      });
+    }
+
+    function showLetter(idx) {
+      const ch = currentWord[idx];
+      if (!ch || !LETTERS[ch]) return;
+
+      // Update strip highlighting
+      currentWord.split('').forEach((_, i) => {
+        const el = document.getElementById('sl-' + i);
+        if (!el) return;
+        el.className = 'strip-letter' + (i < idx ? ' done' : i === idx ? ' active' : '');
+      });
+
+      // Swap SVG with pop animation
+      const svgDiv = document.getElementById('handSvg');
+      svgDiv.innerHTML = LETTERS[ch];
+      svgDiv.classList.remove('popin');
+      void svgDiv.offsetWidth; // force reflow to restart animation
+      svgDiv.classList.add('popin');
+
+      document.getElementById('currentLetter').textContent = ch;
+      document.getElementById('letterCounter').textContent =
+        'Letter ' + (idx + 1) + ' of ' + currentWord.length;
+
+      document.getElementById('progressFill').style.width =
+        ((idx + 1) / currentWord.length * 100) + '%';
+
+      prevBtn.disabled = idx === 0;
+      nextBtn.disabled = idx === currentWord.length - 1;
+    }
+
+    // ─────────────────────────────────────────────
+    // Playback
+    // ─────────────────────────────────────────────
+    function scheduleNext() {
+      timer = setTimeout(() => {
+        if (currentIdx < currentWord.length - 1) {
+          currentIdx++;
+          showLetter(currentIdx);
+          scheduleNext();
+        } else {
+          setPlaying(false);
+        }
+      }, getDelay());
+    }
+
+    function setPlaying(val) {
+      playing = val;
+      playBtn.innerHTML = val ? '&#9646;&#9646; Pause' : '&#9654; Play';
+      if (!val) { clearTimeout(timer); timer = null; }
+    }
+
+    function togglePlay() {
+      if (playing) {
+        setPlaying(false);
+      } else {
+        if (currentIdx >= currentWord.length - 1) currentIdx = 0;
+        setPlaying(true);
+        showLetter(currentIdx);
+        scheduleNext();
+      }
+    }
+
+    function stepBy(dir) {
+      setPlaying(false);
+      const next = currentIdx + dir;
+      if (next >= 0 && next < currentWord.length) {
+        currentIdx = next;
+        showLetter(currentIdx);
+      }
+    }
+
+    function restart() {
+      setPlaying(false);
+      currentIdx = 0;
+      showLetter(0);
+    }
+
+    // ─────────────────────────────────────────────
+    // Word loading
+    // ─────────────────────────────────────────────
+    function loadWord(word) {
+      setPlaying(false);
+      currentWord = word.toUpperCase().replace(/[^A-Z]/g, '');
+      if (!currentWord) return;
+      currentIdx = 0;
+      buildStrip(currentWord);
+      showLetter(0);
+    }
+
+    function newWord() {
+      loadWord(WORDS[Math.floor(Math.random() * WORDS.length)]);
+    }
+
+    function spellCustom() {
+      const val = document.getElementById('customWord').value
+        .trim().toUpperCase().replace(/[^A-Z]/g, '');
+      if (val.length > 0) loadWord(val);
+    }
+
+    document.getElementById('customWord').addEventListener('keydown', e => {
+      if (e.key === 'Enter') spellCustom();
+    });
+
+    // ─────────────────────────────────────────────
+    // Sidebar alphabet reference
+    // ─────────────────────────────────────────────
+    const alphaRef = document.getElementById('alphaRef');
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(ch => {
+      const cell = document.createElement('div');
+      cell.className = 'alpha-ref-cell';
+      cell.title = 'Fingerspell ' + ch;
+      cell.innerHTML = (LETTERS[ch] || '') + `<span class="lbl">${ch}</span>`;
+      cell.addEventListener('click', () => loadWord(ch));
+      alphaRef.appendChild(cell);
+    });
+
+    // ─────────────────────────────────────────────
+    // Init — pick a random word on page load
+    // ─────────────────────────────────────────────
+    speedLabel.textContent = SPEED_NAMES[parseInt(speedSlider.value)];
+    newWord();
+  </script>
+
 </body>
 </html>
