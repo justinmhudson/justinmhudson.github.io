@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 *, *:before, *:after {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 h1 {
   color: #fff;
-  font-weight: 600;
+  font-weight: 900;
   padding: 0.65em 1em;
   font-size: 2em;
 }
@@ -15,14 +15,7 @@ body {
   background: #105469;
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 100;
   font-style: normal;
-}
-div {
-  overflow-y: hidden;
-  overflow-x: auto;
-  width: 95%;
-  height: auto;
 }
 table {
   background: #012B39;
@@ -35,13 +28,13 @@ th {
   border-bottom: 1px solid #364043;
   color: #E2B842;
   font-size: 0.85em;
-  font-weight: 600;
+  font-weight: 900;
   padding: 0.5em 1em;
   text-align: left;
 }
 td {
   color: #fff;
-  font-weight: 400;
+  font-weight: 500;
   padding: 0.65em 1em;
 }
 .disabled td {
