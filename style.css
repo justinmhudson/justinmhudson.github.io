@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600);
+@import url(https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap);
 
 *, *:before, *:after {
   margin: 0;
@@ -13,7 +13,7 @@ h1 {
 }
 body {
   background: #105469;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Raleway', sans-serif;
 }
 div {
   overflow-y: hidden;
